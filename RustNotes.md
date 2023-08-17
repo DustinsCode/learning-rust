@@ -291,3 +291,5 @@ let a: [i32; 5] = [1, 2, 3, 4, 5];
 
 ## 3.3 Functions
 
+- uses snake_case for function and variable names
+- 
