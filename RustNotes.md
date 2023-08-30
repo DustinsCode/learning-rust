@@ -292,4 +292,89 @@ let a: [i32; 5] = [1, 2, 3, 4, 5];
 ## 3.3 Functions
 
 - uses snake_case for function and variable names
-- 
+- must declare parameter type
+- calling a function is an expression
+- calling a macro is an expression
+- a new scope block created with curlies is an expression
+
+```Rust
+fn main() {
+  let y = {
+    let x = 3;
+    x + 1 // No semicolon?
+  };
+
+  println!("The value of y is: {y}");
+}
+```
+
+From the book:
+> If you add a semicolon to the end of an expression, you turn it into a statement, and it will then not return a value.
+
+
+- annotate return values with `-> TYPE`
+- most functions return the last expression implicitly
+
+
+## 3.4 Comments
+
+```Rust
+// ...yup
+```
+
+- There are also doc comments `///` i guess
+
+## 3.5 Control Flow
+
+Most common
+- if expressions
+- lööps
+
+### `if`
+
+- condition must be a boolean, no js magicianry 
+- using if in a let statement:
+
+```Rust
+// feels like a ternary tbh
+let condition = true;
+let number = if condition { 5 } else { 6 };
+```
+
+### Lööps
+
+3 kinds of loops: 
+- `loop`
+- `while`
+- `for`
+
+LOOP LABELS?!?!?
+- disambiguate between multiple loops!!!!!
+  - ARE YOU KIDDING ME????
+- must begin with a single quote
+  - see `/loops/main.rs`
+
+While loops, pretty standard. 
+
+For loops:
+
+```rs
+fn main() {
+  let a = [10,20,30,40,50]
+
+  for element in a {
+    println!("the value is: {element}");
+  }
+}
+```
+
+see also:
+
+```rs
+fn main() {
+    for number in (1..4).rev() {
+        println!("{number}!");
+    }
+    println!("LIFTOFF!!!");
+}
+```
