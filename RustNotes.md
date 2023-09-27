@@ -378,3 +378,69 @@ fn main() {
     println!("LIFTOFF!!!");
 }
 ```
+
+# Ownership (Ch 4)
+- took a break here to see how far I could make it in Rustinlings, got to problem 21 aka primitive_types4
+  
+
+Guarantees memory safety without needing garbage collection
+
+## 4.1 What is ownership?
+
+**Safety is the absence of undefined behavior**
+
+i.e - don't use a variable before it's defined or has a value
+
+- Checks for safety at compile time
+- Variables live in the stack
+  - a variable's value is copied from it's slot in the stack frame
+  - frames in the stack are associated with a specific function and are deallocated when the function returns
+- Boxes live in the heap
+  - copying can take up a lot of memory
+    - ex: copying an array of 1 million elements
+    - transfers access to data without using it with pointers
+      - a common way to make a pointer is to allocate memory in the heap
+        - the heap is a separate region of memory where **data can live indefinitely**
+        - not tied to a stack frame
+      - Rust provides a construct called `Box` for putting data on the heap
+
+```rust
+let a = Box::new([0;1_000_000]);
+let b = a;
+```
+
+- there is only a single array in memory
+- the statement `let b = a` copies the pointer from a into b
+
+***Rust does not permit manual memory management***
+- no malloc or dealloc
+- stack frames are automatically managed by rust
+- cannot free declared Box, otherwise could lead to memory management bugs, leading to undefined behavior
+- Rust automatically frees a box's heap memory
+> (almost correct) if a variable is bound to a box, when rust deallocates the variable's frame, then rust deallocates the box's heap memory
+
+```rust
+let a = Box::new([0; 1_000_000]);
+let b = a;
+```
+
+By the almost correct principal above, Rust would try to free the box's heap memory twice on behalf of both variables.  That is undefined behavior!
+
+Hence, ***Ownership!***
+
+When `a` is bound to `Box::new([0;1_000_000])`, `a` owns the box.  The statement `let b = a` moves ownership from `a` to `b`.
+
+> (fully accurate) If a variable owns a box, when Rust deallocates the variable's frame, then Rust deallocates the box's heap memory
+
+### Collections use boxes!
+
+Boxes are used by Rust data structures like `Vec`, `String`, and `HashMap` to hold a variable number of elements.  
+
+> Moved Heap Data Principle: if a variable `x` moves ownership of heap data to another variable `y`, then `x` cannot be used after the move.
+
+**Cloning avoids moves**
+
+- `.clone()` method will do a deep copy
+
+
+## 4.2 References and Borrowing
