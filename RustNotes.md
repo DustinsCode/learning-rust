@@ -444,3 +444,115 @@ Boxes are used by Rust data structures like `Vec`, `String`, and `HashMap` to ho
 
 
 ## 4.2 References and Borrowing
+
+***References are non-owning pointers***
+- because they do not own the data they point to
+
+```rust
+fn main() {
+  let m1 = String::from("Hello")
+  let m2 = String::from("world")
+  greet(&m1, &m2)
+  let s = format("{} {}", m1, m2);
+}
+
+fn greet(g1: &String, g2: &String) {
+  println!("{} {}", g1, g2);
+}
+```
+**Dereferencing a Pointer Accesses its data**
+
+**Rust avoids simultaneous aliasing and mutation**
+
+- Pointers enable aliasing
+  - aliasing = accessing the same data through different variables.
+    - harmless on its own
+    - combined with mutation, could be bad
+
+> Pointer Safety Principle: data should never be aliased and mutated at the same time
+
+Since references are non-owning pointers, they need different rules than Boxes.  Hence, the ***borrow checker***!
+
+### The Borrow Checker
+
+Core idea is that variables have 3 kinds of permissions:
+
+1. Read(R): data that can be copied to another location
+2. Write(W): data can be mutated in-place
+3. Own(O): data can be moved or dropped
+
+These don't exist at runtime, only within the compilter.
+
+- A variable has RO permissions by default
+  - gets W if annotated with `let mut`
+  - references can temporarily remove permissions
+
+**The borrow checker finds permission violations**
+
+- if a value is being borrowed, we can't perform a write operation
+
+**Mutable references provide unique and non-owning access to data**
+
+- mutable reference created with `&mut`
+- allows mutation but prevents aliasing as the borrowed path becomes temporarily unusable
+- can be temporarily downgraded to read only references
+
+**Permissions are returned at the end of a references lifetime*
+
+**Data must outlive all of its references**
+
+- can't drop a variable while a reference to it still exists
+- introduces the *flow* (`F`) permission
+  - a reference has `F` if it's allowed to be used in a particular expression
+
+## 4.3 Fixing Ownership Errors
+
+*this goes over a few case studies*
+
+A few notes from this section:
+- it is rare for Rust functions to take ownership of heap-owning data structures like `Vec` and `String`
+- Functions should not mutate their inputs if the caller would not expect it
+
+## 4.4 The Slice Type
+
+- a slice is a non-owning pointer
+  
+```rust
+let s = String::from("hello world");
+
+let hello: &str = &s[0..5];
+let world: &str = &s[6..1];
+let s2: &String = &s;
+```
+
+## 4.5 Ownership Recap
+
+**Ownership vs. Garbage Collection**
+
+Garbage Collectors:
+- works at runtime, adjacent to a running program
+- scans through memory to find data that's no longer used
+- avoids undefined behavior
+- avoids the need for a complex type system to check for undef. behavior
+- Performance drawback
+  - reference counting
+  - tracing
+- Can be unpredictable
+
+Ownership:
+- predictable
+- more performant
+
+**Ownership Concepts**
+
+At runtime:
+- allocates local variables in stack frames
+- variables can hold data or pointers
+- pointers can be created through boxes or references
+- slices are references that point to a contiguous sequence of data in memory
+
+At compile-time:
+- tracks RWO permissions on each variable
+- requires variables have the appropriate permissions for given operation
+- permissions can be changes if variable is moved or borrowed
+- 
