@@ -555,4 +555,38 @@ At compile-time:
 - tracks RWO permissions on each variable
 - requires variables have the appropriate permissions for given operation
 - permissions can be changes if variable is moved or borrowed
+
+# Structs (Ch 5)
+
+## 5.1 Defining and Instantiating Structs
+
+Structs:
+- can hold multiple related values
+- values can have different types
+- each piece of data must be named
+- seems similar to a class?
+
+```rust
+struct User {
+  active: bool,
+  username: String,
+  email: String,
+  sign_in_count: u64
+}
+```
+
+- create an instance of a struct: 
+
+```rust
+let user1 = User {
+  email: String::from("example@email.com"),
+  username: String::from("Ferris"),
+  active: true,
+  sign_in_count: 1,
+};
+
+user1.email = String::from("updated@email.com");
+```
+
+- entire instance must be mutable
 - 
